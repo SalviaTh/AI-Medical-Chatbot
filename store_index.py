@@ -16,7 +16,7 @@ text_chunks=textsplit(extracted_data)
 embeddings=download_model()
 
 pc=Pinecone(api_key=PINECONE_API_KEY)
-index_name = "medical-chatbot"
+index_name = "medical-chatbot-doctor"
 
 pc.create_index(
     name=index_name,
