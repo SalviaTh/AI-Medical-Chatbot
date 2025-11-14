@@ -1,10 +1,21 @@
-sentence-transformers
+# --- Core LangChain stack ---
 langchain
+langchain-core
+langchain-community
+langchain-experimental
+langchain-pinecone
+langchain-google-genai
+
+# --- LLM & Embeddings ---
+sentence-transformers
+google-generativeai
+pinecone-client
+
+# --- Utility packages ---
 flask
 pypdf
 python-dotenv
-pinecone[grpc]
-langchain-pinecone
-langchain_community
-langchain_experimental
+
+# --- Development ---
 -e .
+
