@@ -16,23 +16,6 @@ An intelligent, Retrieval-Augmented Generation (RAG) powered medical chatbot. Th
 - **Vector Database:** Pinecone
 - **Frontend:** HTML, CSS (Vanilla), minimal JavaScript (Fetch API)
 
-## 📁 Project Structure 
-```
-.
-├── Data/                 # Put your medical PDF files here
-├── src/                  
-│   ├── helper.py         # Functions for loading PDFs, splitting text, and embedding
-│   └── prompt.py         # System prompt constraining the AI to medical QA
-├── static/
-│   └── style.css         # Modern, premium UI styling
-├── templates/
-│   └── index.html        # Front-end chatbot interface
-├── app.py                # Main Flask application with LCEL RAG chain
-├── store_index.py        # Script to chunk data and push to Pinecone
-├── requirements.txt      # Python dependencies
-└── Dockerfile            # Production Docker setup
-```
-
 ##  How to Setup and Run Locally
 
 ### 1. Clone the repository
