@@ -4,36 +4,148 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
-    <link rel="stylesheet" href="style.css">
-    <title>Chatbot - Brave Coder</title>
+    <meta name="description" content="AI Medical Chatbot - Ask medical questions and get AI-powered answers from a medical encyclopedia">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>AI Medical Chatbot</title>
 </head>
 <body>
-    <div class="wrapper">
-        <div class="title">Simple Chatbot</div>
-        <div class="box">
-            <div class="item">
-                <div class="icon">
-                    <i class="fa fa-user"></i>
-                </div>
+    <div class="wrapper" id="chatbot-wrapper">
+        <div class="title">
+            <i class="fa-solid fa-stethoscope"></i>
+            <span>AI Medical Assistant</span>
+        </div>
+        <div class="box" id="chat-box">
+            <div class="item right">
                 <div class="msg">
-                    <p>Hello everyone, How are you?</p>
+                    <p>Hello! I'm your AI Medical Assistant. Ask me any medical question and I'll help you find answers from medical literature.</p>
+                </div>
+                <div class="icon bot-icon">
+                    <i class="fa-solid fa-robot"></i>
                 </div>
             </div>
             <br clear="both">
-            <div class="item right">
-                <div class="msg">
-                    <p>Nice</p>
-                </div>
-            </div>
         </div>
-        
+
         <div class="typing-area">
             <div class="input-field">
-                <input type="text" placeholder="Type your message" required>
-                <button>Send</button>
+                <input type="text" id="user-input" placeholder="Type your medical question..." required>
+                <button id="send-btn" onclick="sendMessage()">
+                    <i class="fa-solid fa-paper-plane"></i> Send
+                </button>
             </div>
         </div>
     </div>
+
+    <script>
+        const chatBox = document.getElementById("chat-box");
+        const userInput = document.getElementById("user-input");
+        const sendBtn = document.getElementById("send-btn");
+
+        // Send on Enter key
+        userInput.addEventListener("keypress", function(e) {
+            if (e.key === "Enter") {
+                sendMessage();
+            }
+        });
+
+        function appendMessage(text, isUser) {
+            const item = document.createElement("div");
+            item.classList.add("item");
+
+            if (isUser) {
+                item.innerHTML = `
+                    <div class="icon user-icon">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div class="msg">
+                        <p>${text}</p>
+                    </div>
+                `;
+            } else {
+                item.classList.add("right");
+                item.innerHTML = `
+                    <div class="msg">
+                        <p>${text}</p>
+                    </div>
+                    <div class="icon bot-icon">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                `;
+            }
+
+            const br = document.createElement("br");
+            br.setAttribute("clear", "both");
+
+            chatBox.appendChild(item);
+            chatBox.appendChild(br);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function showTyping() {
+            const item = document.createElement("div");
+            item.classList.add("item", "right", "typing-indicator");
+            item.innerHTML = `
+                <div class="msg">
+                    <p><span class="dot"></span><span class="dot"></span><span class="dot"></span></p>
+                </div>
+                <div class="icon bot-icon">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+            `;
+            const br = document.createElement("br");
+            br.setAttribute("clear", "both");
+            chatBox.appendChild(item);
+            chatBox.appendChild(br);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function removeTyping() {
+            const typing = chatBox.querySelector(".typing-indicator");
+            if (typing) {
+                // Remove the typing indicator and its following <br>
+                const next = typing.nextElementSibling;
+                if (next) next.remove();
+                typing.remove();
+            }
+        }
+
+        async function sendMessage() {
+            const msg = userInput.value.trim();
+            if (!msg) return;
+
+            appendMessage(msg, true);
+            userInput.value = "";
+            sendBtn.disabled = true;
+
+            showTyping();
+
+            try {
+                const response = await fetch("/chat", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ msg: msg }),
+                });
+
+                const data = await response.json();
+                removeTyping();
+
+                if (data.answer) {
+                    appendMessage(data.answer, false);
+                } else if (data.error) {
+                    appendMessage("⚠️ " + data.error, false);
+                }
+            } catch (error) {
+                removeTyping();
+                appendMessage("⚠️ Network error. Please check your connection.", false);
+            }
+
+            sendBtn.disabled = false;
+            userInput.focus();
+        }
+    </script>
 </body>
 </html>
