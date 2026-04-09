@@ -15,6 +15,7 @@ pinecone-client
 flask
 pypdf
 python-dotenv
+gunicorn
 
 # --- Development ---
 -e .

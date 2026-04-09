@@ -1,0 +1,21 @@
+# Virtual Environments
+myenv/
+venv/
+env/
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Local Environment Variables
+.env
+
+# Raw/Heavy Data (We don't need to push the gigabyte PDF if the vector DB is already populated remotely)
+Data/
+
+# Jupyter Notebooks and extraneous stuff
+research/
+Generative_AI_PROJECT.egg-info/
+.git/
+.gitignore
